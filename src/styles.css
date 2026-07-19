@@ -1,0 +1,534 @@
+:root {
+  --ink: #12151a;
+  --plate: #1b1f26;
+  --plate-raised: #212630;
+  --plate-hover: #262c37;
+  --line: #2a303a;
+  --bone: #ede7da;
+  --slate: #7b8290;
+  --slate-dim: #565c68;
+  --brass: #c9a46a;
+  --brass-bright: #ddc08a;
+  --brass-dim: #8a7550;
+  --patina: #6fa287;
+  --danger: #d97b7e;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; touch-action: manipulation; }
+
+html, body {
+  margin: 0; height: 100%; overflow: hidden;
+  background: var(--ink);
+  background-image: radial-gradient(1200px 900px at 50% -20%, #1a1f27 0%, var(--ink) 60%);
+}
+body {
+  color: var(--bone);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+#root { height: 100%; }
+
+.panel-shell {
+  height: 100%; width: 100%; max-width: 520px; margin: 0 auto;
+  display: flex; flex-direction: column;
+  border-left: 1px solid var(--line); border-right: 1px solid var(--line);
+  position: relative; overflow: hidden;
+}
+
+/* Idle status pill */
+.status-strip { padding: 14px 20px 0; display: flex; justify-content: center; }
+.status-pill {
+  display: inline-flex; align-items: center; gap: 6px; font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; padding: 6px 14px;
+  border-radius: 999px; background: rgba(111,162,135,0.12); color: var(--patina);
+  border: 1px solid rgba(111,162,135,0.3);
+}
+.status-pill.locked { background: rgba(123,130,144,0.12); color: var(--slate); border-color: rgba(123,130,144,0.3); }
+.status-pill.unlocked { background: rgba(111,162,135,0.16); color: var(--patina); border-color: rgba(111,162,135,0.4); }
+.status-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+/* Camera preview card */
+.preview-card {
+  margin: 16px 20px 0; border-radius: 20px; overflow: hidden; position: relative;
+  aspect-ratio: 4/3; background: var(--plate); border: 1px solid var(--line);
+}
+.preview-card video, .preview-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.preview-placeholder {
+  width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+  color: var(--slate-dim); font-size: 14px;
+}
+.preview-caption {
+  position: absolute; left: 0; right: 0; bottom: 0; padding: 14px 16px;
+  background: linear-gradient(0deg, rgba(10,12,15,0.88), transparent);
+  display: flex; align-items: center; gap: 12px;
+}
+.building-mark {
+  width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--brass-bright), var(--brass));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Fraunces', serif; font-weight: 700; color: #1a1508; font-size: 18px;
+}
+.building-info .name { font-family: 'Fraunces', serif; font-weight: 600; font-size: 16px; color: var(--bone); }
+.building-info .address { font-size: 12px; color: var(--slate); margin-top: 1px; }
+
+/* Action grid */
+.action-grid {
+  padding: 16px 20px 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; flex: 1;
+}
+.action-tile {
+  background: var(--plate); border: 1px solid var(--line); border-radius: 16px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 10px; padding: 18px 10px; cursor: pointer; transition: background 0.15s, transform 0.1s;
+  color: var(--bone); font-size: 13.5px; font-weight: 600; text-align: center;
+}
+.action-tile:active { transform: scale(0.97); background: var(--plate-hover); }
+.action-tile .icon {
+  width: 44px; height: 44px; border-radius: 12px; background: var(--plate-raised);
+  display: flex; align-items: center; justify-content: center; font-size: 20px;
+}
+
+/* Full screens */
+.screen {
+  height: 100%; width: 100%; max-width: 520px; margin: 0 auto; display: flex; flex-direction: column; position: relative;
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+}
+.screen-header {
+  padding: 18px 20px 10px; display: flex; align-items: center; gap: 12px;
+}
+.back-btn {
+  width: 38px; height: 38px; border-radius: 10px; background: var(--plate);
+  border: 1px solid var(--line); color: var(--bone); font-size: 18px;
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
+.screen-title { font-family: 'Fraunces', serif; font-weight: 600; font-size: 20px; color: var(--bone); }
+
+/* Directory */
+.search-box {
+  margin: 6px 20px 12px; padding: 12px 16px; border-radius: 12px; background: var(--plate);
+  border: 1px solid var(--line); color: var(--bone); font-size: 15px; width: calc(100% - 40px);
+  outline: none;
+}
+.directory-list { flex: 1; overflow-y: auto; padding: 0 20px 20px; }
+.directory-row {
+  display: flex; align-items: center; justify-content: space-between; padding: 16px 4px;
+  border-bottom: 1px solid var(--line); cursor: pointer;
+}
+.directory-row .name { font-size: 15.5px; color: var(--bone); font-weight: 500; }
+.directory-row .unit { font-size: 12.5px; color: var(--slate); margin-top: 2px; }
+.call-icon-btn {
+  width: 40px; height: 40px; border-radius: 50%; background: var(--patina); color: #0e1a15;
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+}
+
+/* Keypad — designed as a backlit physical keypad, not a generic phone
+   dialer: rounded-square keys with real bevel depth, serif digits matching
+   the clock elsewhere in this brand, and a segmented brass entry slot
+   instead of plain dots. */
+.keypad-display {
+  margin: 24px auto 10px; display: flex; gap: 8px; justify-content: center;
+  padding: 10px 16px; background: rgba(0,0,0,0.25); border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.05);
+  width: fit-content;
+}
+.keypad-dot {
+  width: 22px; height: 4px; border-radius: 2px; background: var(--slate-dim);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.keypad-dot.filled {
+  background: linear-gradient(90deg, var(--brass), var(--brass-bright));
+  box-shadow: 0 0 10px rgba(221,192,138,0.6);
+}
+.keypad-grid {
+  padding: 14px 32px; display: grid; grid-template-columns: repeat(3, minmax(0, 100px)); gap: 16px;
+  flex: 1; align-content: center; justify-content: center;
+}
+.keypad-btn {
+  aspect-ratio: 1; width: 100%; max-width: 100px; border-radius: 22px;
+  background: linear-gradient(160deg, var(--plate-raised) 0%, var(--plate) 55%, #171b22 100%);
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.06) inset,
+    0 -6px 12px rgba(0,0,0,0.35) inset,
+    0 8px 16px -6px rgba(0,0,0,0.55);
+  color: var(--bone); font-family: 'Fraunces', serif; font-size: 26px; font-weight: 500;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: transform 0.08s, box-shadow 0.08s, color 0.08s;
+}
+.keypad-btn:active {
+  transform: scale(0.92) translateY(1px);
+  color: var(--brass-bright);
+  background: linear-gradient(160deg, var(--plate-hover) 0%, var(--plate-raised) 55%, #1c212a 100%);
+  box-shadow:
+    0 2px 4px rgba(0,0,0,0.4) inset,
+    0 0 0 1px rgba(201,164,106,0.35);
+}
+.keypad-btn.action {
+  background: transparent; border: none; box-shadow: none; color: var(--slate);
+  font-family: inherit; font-size: 14px; font-weight: 500; letter-spacing: 0.02em;
+}
+.keypad-btn.action:active { transform: none; color: var(--bone); box-shadow: none; }
+.keypad-submit {
+  margin: 4px 32px 28px; padding: 17px; border-radius: 16px; max-width: 456px; width: calc(100% - 64px);
+  background: linear-gradient(180deg, var(--brass-bright), var(--brass));
+  color: #1a1508; font-size: 15.5px; font-weight: 700; letter-spacing: 0.01em; border: none; cursor: pointer;
+  box-shadow: 0 8px 20px -8px rgba(201,164,106,0.55), 0 1px 0 rgba(255,255,255,0.3) inset;
+}
+.keypad-submit:disabled { opacity: 0.35; box-shadow: none; }
+
+@media (min-width: 700px) {
+  .keypad-grid { grid-template-columns: repeat(3, minmax(0, 120px)); gap: 22px; }
+  .keypad-btn { max-width: 120px; font-size: 30px; border-radius: 26px; }
+  .keypad-dot { width: 26px; height: 5px; }
+}
+
+/* Calling / call connected */
+.call-screen {
+  height: 100%; width: 100%; max-width: 520px; margin: 0 auto;
+  display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+  padding: 60px 24px 40px; text-align: center;
+}
+.caller-avatar {
+  width: 96px; height: 96px; border-radius: 50%; background: var(--plate-raised);
+  display: flex; align-items: center; justify-content: center; font-size: 36px;
+  border: 2px solid var(--brass-dim); margin-bottom: 20px;
+}
+.caller-name { font-family: 'Fraunces', serif; font-size: 24px; color: var(--bone); margin-bottom: 4px; }
+.call-status { color: var(--slate); font-size: 14px; }
+.call-video-wrap { width: 100%; flex: 1; border-radius: 20px; overflow: hidden; background: var(--plate); margin: 16px 0; position: relative; }
+.call-video-wrap video { width: 100%; height: 100%; object-fit: cover; }
+.call-actions { display: flex; gap: 24px; }
+.call-action-btn {
+  width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 22px; cursor: pointer; border: none;
+}
+.call-action-btn.end { background: var(--danger); color: #2a0e0e; }
+.call-action-btn.neutral { background: var(--plate); color: var(--bone); border: 1px solid var(--line); }
+
+/* Unlock confirmation */
+.unlock-screen {
+  height: 100%; width: 100%; max-width: 520px; margin: 0 auto;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+}
+.unlock-badge {
+  width: 88px; height: 88px; border-radius: 50%; background: rgba(111,162,135,0.15);
+  border: 2px solid var(--patina); color: var(--patina); font-size: 40px;
+  display: flex; align-items: center; justify-content: center;
+}
+.unlock-title { font-family: 'Fraunces', serif; font-size: 22px; color: var(--bone); }
+.unlock-sub { color: var(--slate); font-size: 14px; }
+
+/* QR scan */
+.scan-frame {
+  margin: 20px; border-radius: 20px; overflow: hidden; position: relative; flex: 1; background: var(--plate);
+}
+.scan-frame video { width: 100%; height: 100%; object-fit: cover; }
+.scan-guide {
+  position: absolute; inset: 15% 20%; border: 3px solid var(--brass); border-radius: 16px;
+  box-shadow: 0 0 0 2000px rgba(10,12,15,0.55);
+}
+.scan-hint {
+  position: absolute; bottom: 20px; left: 0; right: 0; text-align: center; color: var(--bone);
+  font-size: 13.5px; text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+}
+
+/* ---------- Status bar ---------- */
+.status-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px 8px; font-size: 12.5px; color: var(--slate);
+}
+.status-bar-left { display: flex; align-items: center; gap: 14px; }
+.status-chip { display: flex; align-items: center; gap: 6px; }
+.status-chip .dot { width: 7px; height: 7px; border-radius: 50%; }
+.status-chip.online .dot { background: var(--patina); box-shadow: 0 0 6px var(--patina); }
+.status-chip.offline .dot { background: var(--danger); }
+.clock { font-family: 'IBM Plex Mono', monospace; }
+
+/* ---------- Visitor card (idle/motion) ---------- */
+.visitor-card {
+  margin: 4px 20px 12px; border-radius: 20px; overflow: hidden; position: relative;
+  aspect-ratio: 4/3; background: var(--plate); border: 1px solid var(--line);
+}
+.visitor-card video, .visitor-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.visitor-live-badge {
+  position: absolute; top: 12px; left: 12px; display: flex; align-items: center; gap: 6px;
+  background: rgba(10,12,15,0.55); padding: 5px 10px; border-radius: 999px;
+  font-size: 11px; color: var(--bone); font-family: 'IBM Plex Mono', monospace;
+}
+.visitor-live-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--patina); }
+.visitor-caption {
+  position: absolute; left: 0; right: 0; bottom: 0; padding: 14px 16px 16px;
+  background: linear-gradient(0deg, rgba(10,12,15,0.92), rgba(10,12,15,0.1) 80%);
+}
+.visitor-caption .label { font-size: 12px; color: var(--brass-bright); margin-bottom: 2px; }
+.visitor-caption .title { font-family: 'Fraunces', serif; font-size: 17px; color: var(--bone); margin-bottom: 10px; }
+.visitor-card-actions { display: flex; gap: 10px; }
+.vc-btn {
+  flex: 1; padding: 10px; border-radius: 10px; font-size: 13.5px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center; gap: 6px; border: none; cursor: pointer;
+}
+.vc-btn.talk { background: rgba(255,255,255,0.12); color: var(--bone); }
+.vc-btn.access { background: var(--patina); color: #0e1a15; }
+.vc-btn:disabled { opacity: 0.4; cursor: default; }
+
+/* Idle screensaver (no motion) */
+.screensaver {
+  width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+}
+.screensaver img { max-width: 60%; max-height: 40%; object-fit: contain; }
+.screensaver .clock-big { font-family: 'Fraunces', serif; font-size: 40px; color: var(--bone); }
+.screensaver .date { color: var(--slate); font-size: 13px; }
+
+/* ---------- Tile grid (colored category tiles) ---------- */
+.tile-grid { padding: 6px 20px 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; flex: 1; }
+.tile {
+  border-radius: 16px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between;
+  min-height: 92px; cursor: pointer; border: 1px solid transparent; transition: transform 0.1s;
+}
+.tile:active { transform: scale(0.97); }
+.tile-icon {
+  width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center;
+  font-size: 17px; background: rgba(255,255,255,0.14); margin-bottom: auto;
+}
+.tile-label { font-size: 14px; font-weight: 700; color: var(--bone); margin-top: 10px; }
+.tile-sub { font-size: 11.5px; color: rgba(237,231,218,0.65); display: flex; align-items: center; gap: 4px; }
+.tile-blue { background: linear-gradient(160deg, #2d4a7a, #1c2f4d); }
+.tile-green { background: linear-gradient(160deg, #2f6b52, #1c3f30); }
+.tile-orange { background: linear-gradient(160deg, #a5652c, #6b3f1a); }
+.tile-slate { background: linear-gradient(160deg, #37414f, #232a34); }
+
+.idle-body { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.bottom-nav {
+  display: flex; align-items: center; justify-content: space-around; padding: 10px 8px 16px;
+  border-top: 1px solid var(--line); background: var(--plate);
+}
+.bottom-nav-item {
+  display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 10.5px;
+  color: var(--slate); cursor: pointer; flex: 1;
+}
+.bottom-nav-item.active { color: var(--brass-bright); }
+.bottom-nav-item .nav-icon { font-size: 18px; }
+.bottom-nav-center {
+  width: 46px; height: 46px; border-radius: 50%; background: linear-gradient(180deg, var(--brass-bright), var(--brass));
+  display: flex; align-items: center; justify-content: center; font-size: 18px; color: #1a1508; margin-top: -18px;
+  border: 3px solid var(--ink);
+}
+
+/* ---------- Simple sub-screen (Building Info, Messages, Settings) ---------- */
+.simple-section { padding: 16px 20px; }
+.info-block { background: var(--plate); border: 1px solid var(--line); border-radius: 14px; padding: 18px; white-space: pre-wrap; font-size: 14.5px; line-height: 1.6; color: var(--bone); }
+.info-block.empty { color: var(--slate); font-style: italic; }
+
+/* Messages */
+.message-picker { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+.message-picker-row {
+  display: flex; align-items: center; justify-content: space-between; padding: 12px 14px;
+  border-radius: 12px; background: var(--plate); border: 1px solid var(--line); cursor: pointer;
+}
+.message-picker-row.selected { border-color: var(--brass); background: rgba(201,164,106,0.1); }
+.message-textarea {
+  width: 100%; min-height: 100px; background: var(--ink); border: 1px solid var(--line); border-radius: 12px;
+  color: var(--bone); padding: 12px 14px; font-family: inherit; font-size: 14.5px; resize: vertical;
+}
+
+/* Compact numeric keypad — used for on-screen-keyboard-free numeric entry
+   outside the main PIN gate (e.g. Settings' Change PIN fields), where three
+   separate fields share one keypad via a tap-to-select "active field". */
+.numpad-grid {
+  padding: 10px 20px; display: grid; grid-template-columns: repeat(3, minmax(0, 72px)); gap: 10px;
+  justify-content: center;
+}
+.numpad-btn {
+  aspect-ratio: 1; width: 100%; max-width: 72px; border-radius: 16px;
+  background: linear-gradient(160deg, var(--plate-raised) 0%, var(--plate) 55%, #171b22 100%);
+  border: 1px solid rgba(255,255,255,0.06);
+  color: var(--bone); font-family: 'Fraunces', serif; font-size: 19px; font-weight: 500;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: transform 0.08s, color 0.08s;
+}
+.numpad-btn:active {
+  transform: scale(0.9) translateY(1px);
+  color: var(--brass-bright);
+  background: linear-gradient(160deg, var(--plate-hover) 0%, var(--plate-raised) 55%, #1c212a 100%);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.4) inset, 0 0 0 1px rgba(201,164,106,0.35);
+}
+.numpad-btn.action {
+  background: transparent; border: none; box-shadow: none; color: var(--slate);
+  font-family: inherit; font-size: 12.5px; font-weight: 500;
+}
+.pin-field-row { position: relative; }
+.pin-field-row input.active-field { border-color: var(--brass); box-shadow: 0 0 0 1px var(--brass); }
+
+/* Settings */
+.settings-row {
+  display: flex; align-items: center; justify-content: space-between; padding: 16px 4px; border-bottom: 1px solid var(--line);
+}
+.settings-row:last-child { border-bottom: none; }
+.settings-label { font-size: 14.5px; color: var(--bone); }
+.settings-slider { width: 55%; accent-color: var(--brass); }
+.pin-gate {
+  height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 24px;
+}
+
+.error-toast {
+  position: absolute; bottom: 24px; left: 20px; right: 20px; background: rgba(217,123,126,0.16);
+  border: 1px solid rgba(217,123,126,0.4); color: var(--danger); padding: 12px 16px;
+  border-radius: 12px; font-size: 13.5px; text-align: center;
+}
+.muted { color: var(--slate); }
+
+/* ---------- Responsive breakpoints ---------- */
+/* The panel previously had zero media queries — a fixed narrow layout that
+   never used the extra space on wider kiosk displays or tablets in
+   landscape. Two tiers: a wider phone/small-tablet layout, and a genuine
+   wide/landscape kiosk layout with more breathing room and a 3-column tile
+   grid, closer to real intercom hardware aspect ratios. */
+
+/* Breakpoints mapped to real industry-standard panel sizes rather than
+   arbitrary numbers:
+   - base (< 700px): 7" door panels, typically ~480-600px CSS width in
+     portrait mount (e.g. 800x480, 1024x600 @ 1:1 DPR)
+   - 700px+: 10" door panels, ~800-1200px CSS width portrait or landscape
+     (e.g. 1280x800, 1920x1200)
+   - 1500px+: 15"/22" lobby directory kiosks - a genuinely different
+     product category from a door panel, landscape-mounted, commonly
+     1920x1080 CSS width at 1:1 DPR regardless of whether the physical
+     glass is 15" or 22" (same resolution, just higher DPI on the larger
+     one) - previously capped at 980px max-width here, wasting roughly
+     half of a 1920px-wide screen as unused black space. */
+@media (min-width: 700px) {
+  .panel-shell, .screen, .call-screen, .unlock-screen { max-width: 720px; }
+  .tile-grid { grid-template-columns: 1fr 1fr 1fr; gap: 16px; padding: 8px 28px 16px; }
+  .tile { min-height: 108px; padding: 20px; }
+  .tile-label { font-size: 15px; }
+  .visitor-card { min-height: 260px; }
+}
+
+@media (min-width: 1100px) {
+  .panel-shell, .screen, .call-screen, .unlock-screen { max-width: 980px; }
+  .tile-grid { grid-template-columns: 1fr 1fr 1fr; gap: 20px; padding: 12px 36px 20px; }
+  .tile { min-height: 128px; padding: 24px; }
+  .tile-label { font-size: 16px; }
+  .tile-sub { font-size: 12.5px; }
+  .status-bar { padding: 20px 36px 12px; font-size: 13.5px; }
+  .visitor-card { min-height: 320px; }
+}
+
+@media (min-width: 1500px) {
+  .panel-shell, .screen, .call-screen, .unlock-screen { max-width: 1600px; }
+  .tile-grid { grid-template-columns: 1fr 1fr 1fr 1fr; gap: 24px; padding: 16px 48px 24px; }
+  .tile { min-height: 148px; padding: 28px; }
+  .tile-icon { font-size: 32px; }
+  .tile-label { font-size: 18px; }
+  .tile-sub { font-size: 14px; }
+  .status-bar { padding: 24px 48px 16px; font-size: 15px; }
+  .status-chip .dot { width: 9px; height: 9px; }
+  .clock { font-size: 15px; }
+  .visitor-card { min-height: 420px; }
+  .screensaver .clock-big { font-size: 64px; }
+  .keypad-grid { grid-template-columns: repeat(3, minmax(0, 140px)); gap: 26px; }
+  .keypad-btn { max-width: 140px; font-size: 34px; border-radius: 30px; }
+}
+
+/* Landscape kiosk orientation (wider than tall) — the reference layout
+   with the camera preview on one side and action tiles on the other,
+   rather than everything stacked vertically. Applies across both the
+   10" landscape case and the full 15"/22" lobby kiosk case above. */
+@media (min-width: 900px) and (orientation: landscape) {
+  .panel-shell { max-width: 1100px; }
+  .idle-body { display: flex; gap: 24px; align-items: stretch; padding: 0 28px 20px; }
+  .idle-body .visitor-card { flex: 1 1 55%; margin: 0; min-height: 100%; }
+  .idle-body .tile-grid { flex: 1 1 45%; padding: 0; align-content: start; }
+}
+
+@media (min-width: 1500px) and (orientation: landscape) {
+  .panel-shell { max-width: 1700px; }
+  .idle-body { gap: 40px; padding: 0 48px 32px; }
+}
+
+/* On-screen keyboard - a real kiosk shouldn't rely on the OS's own keyboard
+   showing up reliably, especially once locked into kiosk mode where system
+   UI behavior can get unpredictable. Matches the keypad's material language
+   (same plate/bevel treatment) rather than looking like a bolted-on
+   browser default. */
+.osk-anchor {
+  position: sticky; bottom: 0; left: 0; right: 0; z-index: 5;
+  background: var(--plate); border-top: 1px solid var(--line);
+  box-shadow: 0 -12px 24px -12px rgba(0,0,0,0.5);
+}
+.osk-done-row {
+  display: flex; justify-content: flex-end; padding: 8px 16px 0;
+}
+.osk {
+  padding: 10px 16px 16px; display: flex; flex-direction: column; gap: 8px;
+  background: rgba(0,0,0,0.2); border-top: 1px solid rgba(255,255,255,0.06);
+}
+.osk-row { display: flex; gap: 6px; justify-content: center; }
+.osk-spacer { flex: 0.5; }
+.osk-key {
+  flex: 1; min-width: 0; max-width: 48px; height: 44px;
+  background: linear-gradient(160deg, var(--plate-raised), var(--plate));
+  border: 1px solid rgba(255,255,255,0.06); border-radius: 10px;
+  color: var(--bone); font-size: 15px; font-weight: 500;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: transform 0.06s, color 0.06s;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset, 0 3px 6px -3px rgba(0,0,0,0.5);
+}
+.osk-key:active {
+  transform: scale(0.88) translateY(1px);
+  color: var(--brass-bright);
+  background: linear-gradient(160deg, var(--plate-hover), var(--plate-raised));
+  box-shadow: 0 2px 4px rgba(0,0,0,0.4) inset, 0 0 0 1px rgba(201,164,106,0.35);
+}
+.osk-wide { max-width: 68px; font-size: 17px; }
+.osk-space { max-width: 260px; flex: none; }
+
+@media (min-width: 700px) {
+  .osk-key { max-width: 56px; height: 50px; font-size: 16px; }
+  .osk-wide { max-width: 78px; }
+}
+
+/* Short-height kiosk tuning — the actual 7" Freenove panel is 800x480,
+   which none of the width-based tiers above account for (they assume much
+   taller viewports at similar widths). Without this, vertical content
+   routinely doesn't fit in 480px and either clips (old overflow:hidden
+   behavior) or needs excessive scrolling. Tightens paddings/sizes instead
+   of relying on scroll as the only fix. */
+@media (max-height: 520px) {
+  .status-bar { padding: 8px 20px 4px; font-size: 11px; }
+  /* The 4:3 aspect-ratio visitor preview was designed for taller viewports —
+     on an 800x480 screen it alone computes to ~510px tall (wider than the
+     screen itself), pushing the tile grid and bottom nav off-screen
+     entirely. Fix to a fixed, modest height instead of aspect-ratio. */
+  .visitor-card { aspect-ratio: unset; height: 96px; margin: 2px 16px 6px; }
+  .visitor-caption { padding: 8px 12px 10px; }
+  .visitor-caption .title { font-size: 14px; margin-bottom: 4px; }
+  .visitor-caption .muted { display: none; }
+  .tile-grid { padding: 4px 16px 6px; gap: 8px; }
+  .tile { padding: 10px; min-height: 62px; border-radius: 12px; }
+  .tile-icon { width: 24px; height: 24px; font-size: 13px; border-radius: 7px; margin-bottom: 4px; }
+  .tile-label { font-size: 12px; margin-top: 2px; }
+  .tile-sub { font-size: 10px; }
+  .bottom-nav { padding: 6px 8px 8px; }
+  .bottom-nav-item { font-size: 9px; gap: 2px; }
+  .bottom-nav-item .nav-icon { font-size: 15px; }
+  .bottom-nav-center { width: 38px; height: 38px; font-size: 15px; margin-top: -14px; }
+  .panel-shell { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+
+  .screen-header { padding: 10px 20px 6px; }
+  .action-grid { padding: 10px 16px 12px; gap: 8px; }
+  .action-tile { padding: 10px 8px; gap: 6px; }
+  .action-tile .icon { width: 34px; height: 34px; font-size: 16px; }
+  .keypad-display { margin: 10px auto 6px; padding: 8px 14px; }
+  .keypad-grid { padding: 6px 24px; gap: 10px; grid-template-columns: repeat(3, minmax(0, 64px)); }
+  .keypad-btn { max-width: 64px; font-size: 19px; border-radius: 16px; }
+  .keypad-submit { margin: 4px 24px 12px; padding: 12px; }
+  .numpad-grid { padding: 6px 16px; gap: 6px; grid-template-columns: repeat(3, minmax(0, 54px)); }
+  .numpad-btn { max-width: 54px; font-size: 15px; border-radius: 12px; }
+  .osk-key { height: 34px; max-width: 40px; font-size: 13px; }
+  .osk-wide { max-width: 56px; font-size: 14px; }
+  .osk-space { max-width: 180px; }
+  .osk { padding: 6px 10px 10px; gap: 6px; }
+  .settings-row { padding: 8px 4px; }
+  .preview-card { margin: 8px 16px 0; }
+  .message-textarea { min-height: 60px; }
+}
